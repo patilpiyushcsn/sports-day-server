@@ -13,14 +13,14 @@ export class UsersController extends BaseApiController {
 
   @Post()
   async create(
-    @Body('userId') userId: string,
+    @Body('username') username: string,
     @Body('firstName') firstName: string,
     @Body('lastName') lastName: string,
     @Res() response: Response,
   ) {
     try {
       const user: User = await this.usersService.create(
-        userId,
+        username,
         firstName,
         lastName,
       );
@@ -40,16 +40,16 @@ export class UsersController extends BaseApiController {
     }
   }
 
-  @Put('/:id/events/:eventId/register')
+  @Put('/:userId/events/:eventId/register')
   async registerEvent(
-    @Param('id') id: string,
+    @Param('userId') userId: string,
     @Param('eventId') eventId: string,
     @Body('event') event: Event,
     @Res() response: Response,
   ) {
     try {
       const user: User = await this.usersService.registerEvent(
-        id,
+        userId,
         parseInt(eventId, 10),
         event,
       );
@@ -59,15 +59,15 @@ export class UsersController extends BaseApiController {
     }
   }
 
-  @Put('/:id/events/:eventId/unregister')
+  @Put('/:userId/events/:eventId/unregister')
   async unregisterEvent(
-    @Param('id') id: string,
+    @Param('userId') userId: string,
     @Param('eventId') eventId: string,
     @Res() response: Response,
   ) {
     try {
       const user: User = await this.usersService.unregisterEvent(
-        id,
+        userId,
         parseInt(eventId, 10),
       );
       return this.successResponse(user, response);
@@ -76,13 +76,14 @@ export class UsersController extends BaseApiController {
     }
   }
 
-  @Get('/:id/events/registered')
+  @Get('/:userId/events/registered')
   async allRegisteredEvents(
-    @Param('id') id: string,
+    @Param('userId') userId: string,
     @Res() response: Response,
   ) {
     try {
-      const events: Event[] = await this.usersService.allRegisteredEvents(id);
+      const events: Event[] =
+        await this.usersService.allRegisteredEvents(userId);
       return this.successResponse(events, response);
     } catch (error) {
       return this.serverErrorResponse(error.message ?? error, response);

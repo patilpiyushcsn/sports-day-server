@@ -11,21 +11,21 @@ export class UsersService {
   constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
 
   async create(
-    userId: string,
+    username: string,
     firstName: string,
     lastName: string,
   ): Promise<User> {
     try {
-      if (!(await this.login(userId))) {
+      if (!(await this.login(username))) {
         const user = new this.userModel({
-          user_id: userId,
+          username: username,
           first_name: firstName,
           last_name: lastName,
         });
         const result = await user.save();
         return result;
       }
-      throw 'userId already exist, please login using userId';
+      throw 'username already exist, please login using username';
     } catch (error) {
       throw error;
     }
@@ -41,12 +41,12 @@ export class UsersService {
   }
 
   async registerEvent(
-    id: string,
+    userId: string,
     eventId: number,
     event: Event,
   ): Promise<User> {
     try {
-      const user = await this.userModel.findById(id);
+      const user = await this.userModel.findById(userId);
       if (!user.events.some((event) => event.id === eventId)) {
         user.events = user.events.concat(event);
         const result = await user.save();
@@ -58,9 +58,9 @@ export class UsersService {
     }
   }
 
-  async unregisterEvent(id: string, eventId: number): Promise<User> {
+  async unregisterEvent(userId: string, eventId: number): Promise<User> {
     try {
-      const user = await this.userModel.findById(id);
+      const user = await this.userModel.findById(userId);
       user.events = user.events.filter((event) => event.id !== eventId);
       const result = await user.save();
       return result;
@@ -69,9 +69,9 @@ export class UsersService {
     }
   }
 
-  async allRegisteredEvents(id: string): Promise<Event[]> {
+  async allRegisteredEvents(userId: string): Promise<Event[]> {
     try {
-      const user = await this.userModel.findById(id);
+      const user = await this.userModel.findById(userId);
       return user.events;
     } catch (error) {
       throw error;
