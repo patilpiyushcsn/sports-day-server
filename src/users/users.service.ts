@@ -18,7 +18,7 @@ export class UsersService {
     try {
       if (!(await this.login(username))) {
         const user = new this.userModel({
-          username: username,
+          username,
           first_name: firstName,
           last_name: lastName,
         });
@@ -31,10 +31,10 @@ export class UsersService {
     }
   }
 
-  async login(userId: string): Promise<boolean> {
+  async login(username: string): Promise<User> {
     try {
-      const user = await this.userModel.findOne({ user_id: userId });
-      return user ? true : false;
+      const user = await this.userModel.findOne({ username });
+      return user;
     } catch (error) {
       throw error;
     }
@@ -69,7 +69,7 @@ export class UsersService {
     }
   }
 
-  async allRegisteredEvents(userId: string): Promise<Event[]> {
+  async getRegisteredEvents(userId: string): Promise<Event[]> {
     try {
       const user = await this.userModel.findById(userId);
       return user.events;

@@ -31,10 +31,10 @@ export class UsersController extends BaseApiController {
   }
 
   @Post('/login')
-  async login(@Body('userId') userId: string, @Res() response: Response) {
+  async login(@Body('username') username: string, @Res() response: Response) {
     try {
-      const loggedIn: boolean = await this.usersService.login(userId);
-      return this.successResponse(loggedIn, response);
+      const user: User = await this.usersService.login(username);
+      return this.successResponse(user, response);
     } catch (error) {
       return this.serverErrorResponse(error.message ?? error, response);
     }
@@ -77,13 +77,13 @@ export class UsersController extends BaseApiController {
   }
 
   @Get('/:userId/events/registered')
-  async allRegisteredEvents(
+  async getRegisteredEvents(
     @Param('userId') userId: string,
     @Res() response: Response,
   ) {
     try {
       const events: Event[] =
-        await this.usersService.allRegisteredEvents(userId);
+        await this.usersService.getRegisteredEvents(userId);
       return this.successResponse(events, response);
     } catch (error) {
       return this.serverErrorResponse(error.message ?? error, response);
